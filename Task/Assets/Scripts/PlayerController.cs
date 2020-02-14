@@ -8,8 +8,13 @@ namespace FueroGamesTask.Player
         [SerializeField] float deceleration = 0.5f;
         [SerializeField] float maxMovementSpeed = 1;
         [SerializeField] float turnSpeed = 1;
+        
+        Rigidbody2D rigidbody;
 
-        Vector3 currentVelocity = new Vector3(0, 0, 0);
+        private void Awake()
+        {
+            rigidbody = GetComponent<Rigidbody2D>();
+        }
 
         void Update()
         {
@@ -29,37 +34,43 @@ namespace FueroGamesTask.Player
             {
                 Turn(-turnSpeed);
             }
-            Move();
+            else
+            {
+                Turn(0);
+            }
         }
 
         private void Accelerate()
         {
-            currentVelocity += transform.up * acceleration;
-            float currentMovementSpeed = currentVelocity.magnitude;
+            rigidbody.velocity += (Vector2)transform.up * acceleration;
+            float currentMovementSpeed = rigidbody.velocity.magnitude;
             if (currentMovementSpeed > maxMovementSpeed)
             {
-                currentVelocity = currentVelocity / (currentMovementSpeed / maxMovementSpeed);
+                rigidbody.velocity = rigidbody.velocity / (currentMovementSpeed / maxMovementSpeed);
             }
         }
 
         private void Decelerate()
         {
-            currentVelocity -= currentVelocity * deceleration;
-            float currentMovementSpeed = currentVelocity.magnitude;
+            rigidbody.velocity -= rigidbody.velocity * deceleration;
+            float currentMovementSpeed = rigidbody.velocity.magnitude;
             if (currentMovementSpeed < 0)
             {
-                currentVelocity = new Vector3(0, 0, 0);
+                rigidbody.velocity = new Vector2(0, 0);
             }
-        }
-
-        private void Move()
-        {
-            transform.localPosition += currentVelocity * Time.deltaTime;
         }
 
         private void Turn(float speed)
         {
-            transform.Rotate(new Vector3(0, 0, speed) * Time.deltaTime);
+            rigidbody.angularVelocity = speed;
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision.CompareTag("Asteroid"))
+            {
+                //gameover
+            }
         }
     }
 }

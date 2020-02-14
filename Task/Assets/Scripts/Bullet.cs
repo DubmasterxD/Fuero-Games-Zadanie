@@ -23,12 +23,13 @@ public class Bullet : MonoBehaviour
 
     public void Shoot(Vector3 position, Quaternion rotation)
     {
-        transform.SetPositionAndRotation(position, rotation);
+        transform.position = position;
+        transform.localRotation = rotation;
         toggleActive(true);
         rigidbody.velocity = transform.up * bulletSpeed; 
     }
 
-    public void Deactivate(float delay)
+    public void DeactivateIn(float delay)
     {
         timeToDeactivate = delay;
     }
@@ -36,5 +37,13 @@ public class Bullet : MonoBehaviour
     private void toggleActive(bool shouldActivate)
     {
         gameObject.SetActive(shouldActivate);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Asteroid"))
+        {
+            toggleActive(false);
+        }
     }
 }

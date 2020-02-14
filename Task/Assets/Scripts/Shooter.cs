@@ -32,7 +32,7 @@ namespace FueroGamesTask.Player
             for (int i = 0; i < bulletsPool.Length; i++)
             {
                 bulletsPool[i] = Instantiate(bulletPrefab, bullets);
-                bulletsPool[i].Deactivate(0);
+                bulletsPool[i].DeactivateIn(0);
             }
         }
 
@@ -54,7 +54,7 @@ namespace FueroGamesTask.Player
                 lastBulletIndex = 0;
             }
             bulletsPool[lastBulletIndex].Shoot(gun.position, transform.rotation);
-            bulletsPool[lastBulletIndex].Deactivate(bulletLifespan);
+            bulletsPool[lastBulletIndex].DeactivateIn(bulletLifespan);
         }
     }
 }
