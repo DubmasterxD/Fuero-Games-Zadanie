@@ -5,11 +5,13 @@ public class Bullet : MonoBehaviour
     [SerializeField] float bulletSpeed = 3;
 
     float timeToDeactivate = 0;
-    Rigidbody2D rigidbody;
+    Rigidbody2D rb2d;
+    GameManager gameManager;
 
     private void Awake()
     {
-        rigidbody = GetComponent<Rigidbody2D>();
+        rb2d = GetComponent<Rigidbody2D>();
+        gameManager = FindObjectOfType<GameManager>();
     }
 
     private void Update()
@@ -24,9 +26,9 @@ public class Bullet : MonoBehaviour
     public void Shoot(Vector3 position, Quaternion rotation)
     {
         transform.position = position;
-        transform.localRotation = rotation;
+        transform.rotation = rotation;
         toggleActive(true);
-        rigidbody.velocity = transform.up * bulletSpeed; 
+        rb2d.velocity = transform.up * bulletSpeed; 
     }
 
     public void DeactivateIn(float delay)
@@ -44,6 +46,7 @@ public class Bullet : MonoBehaviour
         if (collision.CompareTag("Asteroid"))
         {
             toggleActive(false);
+            gameManager.AddScore();
         }
     }
 }

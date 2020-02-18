@@ -10,19 +10,47 @@ namespace FueroGamesTask.Player
         [SerializeField] Transform gun = null;
         [SerializeField] Transform bullets = null;
 
+        bool canShoot = false;
         int lastBulletIndex = 0;
         float timeSinceLastShot = 0;
         Bullet[] bulletsPool;
         PlayerController player;
+        GameManager gameManager;
 
         private void Awake()
         {
             player = GetComponent<PlayerController>();
+            gameManager = FindObjectOfType<GameManager>();
+            gameManager.onGameStart += GameStarted;
+            gameManager.onGameOver += GameOver;
         }
 
         private void Start()
         {
             CreateBulletsPool();
+        }
+
+        private void Update()
+        {
+            if (canShoot)
+            {
+                timeSinceLastShot += Time.deltaTime;
+                if (timeSinceLastShot >= shootCooldown)
+                {
+                    Shoot();
+                    timeSinceLastShot = 0;
+                }
+            }
+        }
+
+        private void GameStarted()
+        {
+            canShoot = true;
+        }
+
+        private void GameOver()
+        {
+            canShoot = false;
         }
 
         private void CreateBulletsPool()
@@ -33,16 +61,6 @@ namespace FueroGamesTask.Player
             {
                 bulletsPool[i] = Instantiate(bulletPrefab, bullets);
                 bulletsPool[i].DeactivateIn(0);
-            }
-        }
-
-        private void Update()
-        {
-            timeSinceLastShot += Time.deltaTime;
-            if (timeSinceLastShot >= shootCooldown)
-            {
-                Shoot();
-                timeSinceLastShot = 0;
             }
         }
 
